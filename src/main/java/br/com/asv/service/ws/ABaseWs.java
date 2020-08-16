@@ -11,19 +11,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.asv.controller.IBaseController;
 import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs {
+public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs<D> {
 
 	@Getter(AccessLevel.PROTECTED)
 	private final IBaseController<D> service;
@@ -72,22 +69,11 @@ public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs {
 		return ResponseEntity.ok(getService().findAllByStatusEntity(pageable, StatusEntityEnum.DISABLED));
 	}
 
-	@PostMapping
-	@ApiResponses
-	public abstract ResponseEntity<D> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto) ;
-	
-	public ResponseEntity<D> saveImp(
-			@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto) {
+	public ResponseEntity<D> saveImp(D dto) {
 		ResponseEntity<D> ok = ResponseEntity.ok(getService().save(dto));
 		return ok;
 	}
 	
-
-	@PutMapping
-	public abstract ResponseEntity<D> update(@RequestBody @Valid D dto);
-		
-	
-	@PutMapping
 	public ResponseEntity<D> updateImp(@RequestBody @Valid D dto) {
 		return ResponseEntity.ok(getService().update(dto));
 	}
@@ -120,4 +106,6 @@ public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs {
 		getService().recovery(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	
 }

@@ -8,6 +8,10 @@ import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import br.com.asv.model.daos.IBaseDao;
 import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.entities.IBaseEntity;
@@ -88,5 +92,11 @@ public abstract class ABaseController<E extends IBaseEntity, R extends IBaseDao<
 	public void recovery(Collection<D> models) {
 		 models.forEach(item -> recovery(item.getPid()));
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Page<D> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
+		return new PageImpl<D>((List<D>) getDao().findAllByStatusEntity(pageable, statusEntity).stream().map(E::toDTO).collect(Collectors.toList()));
 	}
 }
