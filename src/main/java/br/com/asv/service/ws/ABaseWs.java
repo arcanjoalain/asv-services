@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs<D> {
 	@Getter(AccessLevel.PROTECTED)
 	private final IBaseController<D> service;
 
+	@Autowired
 	public ABaseWs(IBaseController<D> service) {
 		this.service = service;
 	}

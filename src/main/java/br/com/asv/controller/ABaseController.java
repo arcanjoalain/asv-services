@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ public abstract class ABaseController<E extends IBaseEntity, R extends IBaseDao<
 	private final String className;
 
 	@SuppressWarnings("unchecked")
+	@Autowired
 	public ABaseController(R dao) {
 		this.dao = dao;
 		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
