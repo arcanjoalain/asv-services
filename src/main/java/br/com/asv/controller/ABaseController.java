@@ -86,7 +86,7 @@ public abstract class ABaseController<E extends IBaseEntity, R extends IBaseDao<
 
 	@Override
 	public void recovery(Long id) {
-		 recovery(id);
+		getDao().recovery(id);
 		
 	}
 
