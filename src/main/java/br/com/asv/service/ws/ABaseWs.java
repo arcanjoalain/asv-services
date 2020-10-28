@@ -2,6 +2,7 @@ package br.com.asv.service.ws;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,12 +72,18 @@ public abstract class ABaseWs<D extends IBaseDto> implements IBaseWs<D> {
 		return ResponseEntity.ok(getService().findAllByStatusEntity(pageable, StatusEntityEnum.DISABLED));
 	}
 
-	public ResponseEntity<D> saveImp(D dto) {
+	public ResponseEntity<D> saveImp(D dto,  HttpServletRequest req) {
+		String token = req.getHeader("Authorization").replace("Bearer","");
+		System.out.println("#########################3");
+		 System.out.println(token);
 		ResponseEntity<D> ok = ResponseEntity.ok(getService().save(dto));
 		return ok;
 	}
 	
-	public ResponseEntity<D> updateImp(@RequestBody @Valid D dto) {
+	public ResponseEntity<D> updateImp(@RequestBody @Valid D dto,  HttpServletRequest req) {
+		 String token = req.getHeader("Authorization").replace("Bearer","");
+		 System.out.println("#########################2");
+		 System.out.println(token);
 		return ResponseEntity.ok(getService().update(dto));
 	}
 

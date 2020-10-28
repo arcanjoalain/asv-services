@@ -1,5 +1,7 @@
 package br.com.asv.service.ws;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ public interface IBaseWs<D> {
 	
 	@PostMapping
 	@ApiResponses
-	ResponseEntity<D> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto) ;
+	@Transactional
+	ResponseEntity<D> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto , HttpServletRequest req) ;
 	
 	@PutMapping
-	ResponseEntity<D> update(@RequestBody @Valid D dto);
+	@Transactional
+	ResponseEntity<D> update(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto, HttpServletRequest req);
 
 }

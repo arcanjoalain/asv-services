@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import br.com.asv.model.daos.IBaseDao;
 import br.com.asv.model.dtos.IBaseDto;
 import br.com.asv.model.entities.IBaseEntity;
+import br.com.asv.model.entities.history.IBaseHistoryEntity;
+import br.com.asv.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.model.enums.StatusEntityEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -60,10 +62,23 @@ public abstract class ABaseController<E extends IBaseEntity, R extends IBaseDao<
 		return (Collection<D>) StreamSupport.stream(getDao().save(entitys).spliterator(), false).map(E::toDTO).collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public D update(D model) {
-		return (D) getDao().update((E) model.toModel()).toDTO();
+		
+		E entity = (E) model.toModel();
+		E entityLast = getDao().findOne(entity.getId());
+		entity.setCreateUserID(entityLast.getCreateUserID());
+		entity.setDateAt(entityLast.getDateAt());
+		if(entity instanceof IBaseHistoryEntity) {
+		}
+		
+		if(entity instanceof IBaseHistoryListEntity) {
+//			((IBaseHistoryListEntity)entity).setHistories(((IBaseHistoryListEntity)entityLast).getHistories());
+		}
+		
+		
+		return (D) getDao().update(entity).toDTO();
 	}
 
 	@SuppressWarnings("unchecked")
