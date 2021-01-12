@@ -7,12 +7,12 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.com.asv.model.dtos.IBaseDto;
+import br.com.asv.client.dto.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
 
-public interface IBaseController<D extends IBaseDto> {
+public interface IBaseController<D extends IBaseDto<I>,I> {
 
-	D findOne(Long id);
+	D findOne(I id);
 
 	Collection<D> findAll();
 
@@ -24,9 +24,9 @@ public interface IBaseController<D extends IBaseDto> {
 	Collection<D> findAllByStatusEntity(StatusEntityEnum enabled);
 	Page<D> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity);
 	
-	void delete(Long id);
+	void delete(I id);
 	void delete(Collection<D> models);
 
-	void recovery(Long id);
+	void recovery(I id);
 	void recovery(Collection<D> models);
 }
