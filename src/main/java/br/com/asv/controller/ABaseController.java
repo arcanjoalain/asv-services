@@ -19,11 +19,15 @@ import br.com.asv.model.entities.IBaseEntity;
 import br.com.asv.model.entities.history.IBaseHistoryEntity;
 import br.com.asv.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.model.enums.StatusEntityEnum;
-import br.com.asv.model.parse.IParseEntity;
+import br.com.asv.model.parse.IBaseParse;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class ABaseController<E extends IBaseEntity<I>, R extends IBaseDao<E, I>, D extends IBaseDto<I>, I>
+public abstract class ABaseController<
+		E extends IBaseEntity<I>, 
+		R extends IBaseDao<E, I>, 
+		D extends IBaseDto<I>, 
+		I>
 		implements IBaseController<D, I> {
 
 	@Getter(AccessLevel.PROTECTED)
@@ -33,11 +37,11 @@ public abstract class ABaseController<E extends IBaseEntity<I>, R extends IBaseD
 	private final String className;
 
 	@Getter(AccessLevel.PROTECTED)
-	private IParseEntity<E, D, I> parseEntity;
+	private IBaseParse<E, D, I> parseEntity;
 
 	@SuppressWarnings("unchecked")
 	@Autowired
-	public ABaseController(R dao, IParseEntity<E, D, I> parseEntity) {
+	public ABaseController(R dao, IBaseParse<E, D, I> parseEntity) {
 		this.dao = dao;
 		this.parseEntity = parseEntity;
 		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
@@ -62,6 +66,11 @@ public abstract class ABaseController<E extends IBaseEntity<I>, R extends IBaseD
 
 	public List<D> findAll() {
 		return (List<D>) StreamSupport.stream(getDao().findAll().spliterator(), false).map(e->parseFindAll(e))
+				.collect(Collectors.toList());
+	}
+	
+	public List<D> findAll(String search) {
+		return (List<D>) StreamSupport.stream(getDao().findAll(search).spliterator(), false).map(e->parseFindAll(e))
 				.collect(Collectors.toList());
 	}
 	
@@ -148,5 +157,17 @@ public abstract class ABaseController<E extends IBaseEntity<I>, R extends IBaseD
 	
 	public D parseAllByStatusEntityPage(E entity) {
 		return parseUnique(entity) ;
+	}
+	
+	@Override
+	public void remove(I id) {
+		 getDao().remove(id);
+
+	}
+
+	@Override
+	public void remove(Collection<D> models) {
+		models.forEach(item -> remove(item.getPid()));
+
 	}
 }

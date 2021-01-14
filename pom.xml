@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>br.com.asv</groupId>
 	<artifactId>asvservices</artifactId>
-	<version>0.1.4</version>
+	<version>0.1.13</version>
 	<name>asvservices</name>
 	<description>Asv Model Lib</description>
 
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>br.com.asv</groupId>
 			<artifactId>asvmodels</artifactId>
-			<version>0.1.4</version>
+			<version>0.1.9</version>
 		</dependency>
 
 		<dependency>
@@ -49,6 +49,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 
 		<dependency>

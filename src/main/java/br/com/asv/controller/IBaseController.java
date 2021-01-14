@@ -1,6 +1,7 @@
 package br.com.asv.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,7 +15,8 @@ public interface IBaseController<D extends IBaseDto<I>,I> {
 
 	D findOne(I id);
 
-	Collection<D> findAll();
+	List<D> findAll();
+	List<D> findAll(String search);
 
 	D save(@Valid D dto);
 	Collection<D> save(Collection<D> models);
@@ -29,4 +31,7 @@ public interface IBaseController<D extends IBaseDto<I>,I> {
 
 	void recovery(I id);
 	void recovery(Collection<D> models);
+	
+	void remove(I pid);
+	void remove(Collection<D> models);
 }
