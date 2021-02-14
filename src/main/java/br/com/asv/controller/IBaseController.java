@@ -8,6 +8,10 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+
 import br.com.asv.client.dto.IBaseDto;
 import br.com.asv.model.enums.StatusEntityEnum;
 
@@ -34,4 +38,6 @@ public interface IBaseController<D extends IBaseDto<I>,I> {
 	
 	void remove(I pid);
 	void remove(Collection<D> models);
+	
+	public D patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException ;
 }

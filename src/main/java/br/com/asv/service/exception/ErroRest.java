@@ -51,13 +51,13 @@ public class ErroRest extends AError {
 		for (int i = 0; i < s.length; i++) {
 			result.add(s[i].toString());
 		}
-		if (e.toString().contains("already exists")) {
-//			System.out.println("already exists");
-		} else if (e.toString().contains("duplicate")) {
-//			System.out.println("value duplicate");
-		} else {
-			e.printStackTrace();
-		}
+//		if (e.toString().contains("already exists")) {
+////			System.out.println("already exists");
+//		} else if (e.toString().contains("duplicate")) {
+////			System.out.println("value duplicate");
+//		} else {
+//			e.printStackTrace();
+//		}
 		return result;
 	}
 
@@ -65,12 +65,18 @@ public class ErroRest extends AError {
 	public List<String> exceptionString(Exception e) {
 		Throwable rootException = e;
 		List<String> result = new LinkedList<>();
-		while (rootException.getCause() != null) {
-			rootException = rootException.getCause();
-			result.add(rootException.getLocalizedMessage());
-			if (rootException.getLocalizedMessage().contains("duplicate")) {
+		if (rootException.getCause() != null) {
+			rootException = e;
+			while (rootException.getCause() != null) {
+				System.out.println(rootException);
+				rootException = rootException.getCause();
+				result.add(rootException.getLocalizedMessage());
+//				if (rootException.getLocalizedMessage().contains("duplicate")) {
 //				System.out.println("value_duplicate");
+//				}
 			}
+		} else {
+			result.add(rootException.getMessage().toString());
 		}
 
 //		if (result == null) {
@@ -79,5 +85,4 @@ public class ErroRest extends AError {
 		return result;
 	}
 
-	
 }
