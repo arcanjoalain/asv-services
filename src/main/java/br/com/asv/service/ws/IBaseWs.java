@@ -114,12 +114,12 @@ public interface IBaseWs<D,I> {
 	public ResponseEntity<?> remove(@RequestBody Collection<D> collection);
 	
 	@ApiResponse
-	@PutMapping(path = "/collection/enabled")
+	@PatchMapping(path = "/collection/enabled")
 	@ResponseBody
 	public ResponseEntity<?> recovery(@RequestBody @Valid Collection<D> collection);
 	
 	@ApiResponse
-	@PutMapping(path = "/enabled/{id}")
+	@PatchMapping(path = "/enabled/{id}")
 	@ResponseBody
 	public ResponseEntity<?> recovery(@PathVariable("id") I id);
 	
