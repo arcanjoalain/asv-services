@@ -20,10 +20,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
-import br.com.asv.client.dto.IBaseDto;
-import br.com.asv.controller.IBaseController;
-import br.com.asv.model.enums.StatusEntityEnum;
-import br.com.asv.model.exceptions.ObjectNotFoundException;
+import br.com.asv.base.client.dto.IBaseDto;
+import br.com.asv.base.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.exceptions.ObjectNotFoundException;
+import br.com.asv.service.controller.IBaseController;
 import br.com.asv.service.exception.IError;
 import lombok.AccessLevel;
 import lombok.Getter;

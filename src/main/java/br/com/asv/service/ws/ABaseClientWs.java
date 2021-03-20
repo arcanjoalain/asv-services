@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 
 import com.github.fge.jsonpatch.JsonPatch;
 
-import br.com.asv.client.dto.IBaseDto;
+import br.com.asv.base.client.dto.IBaseDto;
 import br.com.asv.client.ws.IWSClient;
 import lombok.AccessLevel;
 import lombok.Getter;

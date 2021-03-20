@@ -1,4 +1,4 @@
-package br.com.asv.configuration;
+package br.com.asv.service.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

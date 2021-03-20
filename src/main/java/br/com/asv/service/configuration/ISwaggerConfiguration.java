@@ -1,4 +1,4 @@
-package br.com.asv.configuration;
+package br.com.asv.service.configuration;
 
 import org.springframework.context.annotation.Configuration;
 

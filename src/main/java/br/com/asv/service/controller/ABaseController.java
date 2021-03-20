@@ -1,4 +1,4 @@
-package br.com.asv.controller;
+package br.com.asv.service.controller;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -20,13 +20,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 
-import br.com.asv.client.dto.IBaseDto;
-import br.com.asv.model.daos.IBaseDao;
-import br.com.asv.model.entities.IBaseEntity;
-import br.com.asv.model.entities.history.IBaseHistoryEntity;
-import br.com.asv.model.entities.history.IBaseHistoryListEntity;
-import br.com.asv.model.enums.StatusEntityEnum;
-import br.com.asv.model.parse.IBaseParse;
+import br.com.asv.base.client.dto.IBaseDto;
+import br.com.asv.base.model.daos.IBasePatchDao;
+import br.com.asv.base.model.entities.IBaseEntity;
+import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
+import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
+import br.com.asv.base.model.enums.StatusEntityEnum;
+import br.com.asv.base.model.parse.IBaseParse;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -34,7 +34,7 @@ import lombok.Getter;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public abstract class ABaseController<
 		E extends IBaseEntity<I>, 
-		R extends IBaseDao<E, I>, 
+		R extends IBasePatchDao<E, I>, 
 		D extends IBaseDto<I>, 
 		I>
 		implements IBaseController<D, I> {
@@ -138,10 +138,10 @@ public abstract class ABaseController<
 		E entityLast = getDao().findOne(entity.getPid());
 		entity.setCreateUserPid(entityLast.getCreateUserPid());
 		entity.setCreatedAt(entityLast.getCreatedAt());
-		if (entity instanceof IBaseHistoryEntity) {
+		if (entity instanceof IBaseHistoryEntity<?>) {
 		}
 
-		if (entity instanceof IBaseHistoryListEntity) {
+		if (entity instanceof IBaseHistoryListEntity<?, ?>) {
 //			((IBaseHistoryListEntity)entity).setHistories(((IBaseHistoryListEntity)entityLast).getHistories());
 		}
 

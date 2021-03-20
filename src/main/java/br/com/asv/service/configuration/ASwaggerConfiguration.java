@@ -1,4 +1,4 @@
-package br.com.asv.configuration;
+package br.com.asv.service.configuration;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

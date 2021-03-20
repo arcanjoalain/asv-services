@@ -1,4 +1,4 @@
-package br.com.asv.controller;
+package br.com.asv.service.controller;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
