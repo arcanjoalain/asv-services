@@ -1,5 +1,6 @@
 package br.com.asv.service.ws;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,112 +24,116 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.github.fge.jsonpatch.JsonPatch;
 
+import br.com.asv.base.client.dto.IBaseDto;
+import br.com.asv.base.client.ws.IResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+/**
+ * 
+ * @author alain.vieira
+ *
+ * @param <D> object Dto.
+ * @param <I> index for pid.
+ */
+public interface IBaseWs<D extends IBaseDto<I>,I extends Serializable> {
 
-public interface IBaseWs<D,I> {
-	
-	public ResponseEntity<?> saveImp(@RequestBody @Valid D dto, HttpServletRequest req, BindingResult result);
-	
-	public ResponseEntity<?> updateImp(@RequestBody @Valid D dto, HttpServletRequest req, BindingResult result);
-	
 	@ApiResponse
 	@GetMapping
 	@ResponseBody
-	public ResponseEntity<?> findAll(@RequestParam(value = "search", required = false) String search,HttpServletRequest request) ;
+	ResponseEntity<IResponse> findAll(@RequestParam(value = "search", required = false) String search,HttpServletRequest request) ;
 	
 	@ApiResponse
 	@GetMapping(path = "/{id}")
 	@Transactional
 	@ResponseBody
-	public ResponseEntity<?> findOne(@PathVariable("id") I id);
+	ResponseEntity<IResponse> findOne(@PathVariable("id") I id);
 	
 	@ApiResponse
 	@GetMapping(path = "/page")
 	@ResponseBody
-	public ResponseEntity<?> findAll(@RequestParam(value = "search", required = false) String search, Pageable pageable,HttpServletRequest request);
+	ResponseEntity<IResponse> findAll(@RequestParam(value = "search", required = false) String search, Pageable pageable,HttpServletRequest request);
 	
 	@ApiResponse
 	@GetMapping(path = "/page/{status}")
 	@ResponseBody
-	public ResponseEntity<?> findAllPage(@PathVariable("status") String status,Pageable pageable);
+	ResponseEntity<IResponse> findAllPage(@PathVariable("status") String status,Pageable pageable);
 	
 	@ApiResponse
 	@GetMapping(path = "/status/{status}")
 	@ResponseBody
-	public ResponseEntity<?> findAllStatus(@PathVariable("status") String status);
+	ResponseEntity<IResponse> findAllStatus(@PathVariable("status") String status);
 	
 	@ApiResponse
 	@GetMapping(path = "/enabled")
 	@ResponseBody
-	public ResponseEntity<?> findAllEnabled();
+	ResponseEntity<IResponse> findAllEnabled();
 	
 	@ApiResponse
 	@GetMapping(path = "/enabled/page")
 	@ResponseBody
-	public ResponseEntity<?> findAllEnabled(Pageable pageable);
+	ResponseEntity<IResponse> findAllEnabled(Pageable pageable);
 	
 	@ApiResponse
 	@GetMapping(path = "/disabled")
 	@ResponseBody
-	public ResponseEntity<?> findAllDisabled();
+	ResponseEntity<IResponse> findAllDisabled();
 	
 	@ApiResponse
 	@GetMapping(path = "/disabled/page")
 	@ResponseBody
-	public ResponseEntity<?> findAllDisabled( Pageable pageable);
+	ResponseEntity<IResponse> findAllDisabled( Pageable pageable);
 	
 	@GetMapping(path = "/count")
-	public @ResponseBody ResponseEntity<?> countAll(@RequestParam(value = "search", required = false) String search);
+	@ResponseBody ResponseEntity<IResponse> countAll(@RequestParam(value = "search", required = false) String search);
 	
 	@ApiResponse
 	@PostMapping(path = "/collection")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public ResponseEntity<?> save(@RequestBody @Valid Collection<D> collection);
+	ResponseEntity<IResponse> save(@RequestBody @Valid Collection<D> collection);
 	
 	@PostMapping
 	@ApiResponses
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto , HttpServletRequest req, BindingResult result) ;
+	ResponseEntity<IResponse> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto , HttpServletRequest req, BindingResult result) ;
 	
 	@ApiResponse
 	@DeleteMapping(path = "/collection/disabled")
 	@ResponseBody
-	public ResponseEntity<?> delete(@RequestBody @Valid Collection<D> collection);
+	ResponseEntity<IResponse> delete(@RequestBody @Valid Collection<D> collection);
 	
 	@ApiResponse
 	@DeleteMapping(path = "/disabled/{id}")
 	@ResponseBody
-	public ResponseEntity<?> delete(@PathVariable("id") I id);
+	ResponseEntity<IResponse> delete(@PathVariable("id") I id);
 	
 	@DeleteMapping(path = "/remove/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<?> remove(@PathVariable("id") I id);
+	ResponseEntity<IResponse> remove(@PathVariable("id") I id);
 
 	@ApiResponse
 	@DeleteMapping(path = "/remove")
 	@ResponseBody
-	public ResponseEntity<?> remove(@RequestBody Collection<D> collection);
+	ResponseEntity<IResponse> remove(@RequestBody Collection<D> collection);
 	
 	@ApiResponse
 	@PatchMapping(path = "/collection/enabled")
 	@ResponseBody
-	public ResponseEntity<?> recovery(@RequestBody @Valid Collection<D> collection);
+	ResponseEntity<IResponse> recovery(@RequestBody @Valid Collection<D> collection);
 	
 	@ApiResponse
 	@PatchMapping(path = "/enabled/{id}")
 	@ResponseBody
-	public ResponseEntity<?> recovery(@PathVariable("id") I id);
+	ResponseEntity<IResponse> recovery(@PathVariable("id") I id);
 	
 	@PutMapping
 	@ApiResponses
 	@Transactional
-	public ResponseEntity<?> update(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto, HttpServletRequest req, BindingResult result);
+	ResponseEntity<IResponse> update(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto, HttpServletRequest req, BindingResult result);
 	
 	@PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
 	@Transactional
-	public ResponseEntity<?> patchDto(@PathVariable("id") I id, @Parameter(description = "dto to save.", required = true) @RequestBody JsonPatch patchDto, HttpServletRequest req);
+	ResponseEntity<IResponse> patchDto(@PathVariable("id") I id, @Parameter(description = "dto to save.", required = true) @RequestBody JsonPatch patchDto, HttpServletRequest req);
 }

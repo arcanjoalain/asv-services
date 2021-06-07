@@ -1,5 +1,6 @@
 package br.com.asv.service.controller;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +24,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import br.com.asv.base.client.dto.IBaseDto;
 import br.com.asv.base.model.daos.IBasePatchDao;
 import br.com.asv.base.model.entities.IBaseEntity;
-import br.com.asv.base.model.entities.history.IBaseHistoryEntity;
-import br.com.asv.base.model.entities.history.IBaseHistoryListEntity;
 import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.base.model.parse.IBaseParse;
 import lombok.AccessLevel;
@@ -34,37 +33,25 @@ import lombok.Getter;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public abstract class ABaseController<
 		E extends IBaseEntity<I>, 
-		R extends IBasePatchDao<E, I>, 
-		D extends IBaseDto<I>, 
-		I>
-		implements IBaseController<D, I> {
+		D extends IBaseDto<O>, 
+		I extends Serializable, 
+		O extends Serializable>
+		implements IBaseController<D, O> {
 
 	@Autowired
 	@Getter(AccessLevel.PROTECTED)
-	private R dao;
+	private IBasePatchDao<E, I> dao;
 
 	@Getter(AccessLevel.PROTECTED)
 	private final String className;
 
 	@Autowired
 	@Getter(AccessLevel.PROTECTED)
-	private IBaseParse<E, D, I> parseEntity;
+	private IBaseParse<E, D, I, O> parse;
 	
 	@Getter(AccessLevel.PROTECTED)
 	private Class<E> clazzE;
 
-//	@SuppressWarnings("unchecked")
-//	@Autowired
-//	public ABaseController(R dao, IBaseParse<E, D, I> parseEntity) {
-//		this.dao = dao;
-//		this.parseEntity = parseEntity;
-//		this.className = ((Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
-//				.getActualTypeArguments()[0]).getSimpleName().toLowerCase();
-//		 if (clazzE == null) {
-//				clazzE = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
-//						.getActualTypeArguments()[0];
-//			}
-//	}
 	
 	@SuppressWarnings("unchecked")
 	@Autowired
@@ -77,22 +64,22 @@ public abstract class ABaseController<
 			}
 	}
 
-	public D parseUnique(E entity) {
+	public D parseUnique(E entity) throws IllegalArgumentException{
 		D result = null;
 		if(entity!=null) {
-			result = parseEntity.toDTO(entity);
+			result = getParse().convert(entity);
 		}
 		return result;
 	}
 	
-	public D findOne(I id) {
-		return parseFindOne(getDao().findOne(id));
+	public D findOne(O id) throws IllegalArgumentException{
+		return parseFindOne(getDao().findOne(getParse().convertPidEntity(id)));
 	}	
 	
-	public D parseFindOne(E entity) {
+	public D parseFindOne(E entity) throws IllegalArgumentException {
 		D result = null;
 		if(entity!=null) {
-			result = parseEntity.toDTO(entity,Boolean.TRUE);
+			result = getParse().convert(entity,Boolean.TRUE);
 		}
 		return result;
 	}
@@ -103,19 +90,19 @@ public abstract class ABaseController<
 				.collect(Collectors.toList());
 	}
 	
-	public List<D> findAll(String search) {
+	public List<D> findAll(String search) throws IllegalArgumentException{
 		return (List<D>) StreamSupport.stream(getDao().findAll(search).spliterator(), Boolean.FALSE)
 				.map(e->parseFindAll(e))
 				.collect(Collectors.toList());
 	}
 	
-	public D parseFindAll(E entity) {
+	public D parseFindAll(E entity) throws IllegalArgumentException{
 		return parseUnique(entity) ;
 	}
 
 	@Override
 	public D save(@Valid D dto) {
-		return parseSave(getDao().save(parseEntity.toModel(dto,Boolean.TRUE)));
+		return parseSave(getDao().save(getParse().convert(dto,Boolean.TRUE)));
 	}
 	
 	public D parseSave(E entity) {
@@ -125,30 +112,23 @@ public abstract class ABaseController<
 	@Override
 	public Collection<D> save(Collection<D> models) {
 		Collection<E> entitys = (Collection<E>) models.stream()
-				.map(dto->parseEntity.toModel(dto)).collect(Collectors.toList());
+				.map(dto->getParse().convert(dto)).collect(Collectors.toList());
 		return (Collection<D>) StreamSupport.stream(getDao().save(entitys).spliterator(), false)
 				.map(e-> parseSave(e))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public D update(D model) {
+	public D update(D model) throws IllegalArgumentException{
 
-		E entity = parseEntity.toModel(model);
+		E entity = parse.convert(model);
 		E entityLast = getDao().findOne(entity.getPid());
 		entity.setCreateUserPid(entityLast.getCreateUserPid());
 		entity.setCreatedAt(entityLast.getCreatedAt());
-		if (entity instanceof IBaseHistoryEntity<?>) {
-		}
-
-		if (entity instanceof IBaseHistoryListEntity<?, ?>) {
-//			((IBaseHistoryListEntity)entity).setHistories(((IBaseHistoryListEntity)entityLast).getHistories());
-		}
-
 		return parseUpdate(getDao().update(entity));
 	}
 	
-	public D parseUpdate(E entity) {
+	public D parseUpdate(E entity) throws IllegalArgumentException{
 		return parseUnique(entity) ;
 	}
 
@@ -158,30 +138,30 @@ public abstract class ABaseController<
 				.collect(Collectors.toList());
 	}
 	
-	public D parseAllByStatusEntity(E entity) {
+	public D parseAllByStatusEntity(E entity) throws IllegalArgumentException{
 		return parseUnique(entity) ;
 	}
 
 	@Override
-	public void delete(I id) {
-		getDao().delete(id);
+	public void delete(O id) throws IllegalArgumentException{
+		getDao().delete(getParse().convertPidEntity(id));
 
 	}
 
 	@Override
-	public void delete(Collection<D> models) {
+	public void delete(Collection<D> models) throws IllegalArgumentException{
 		models.forEach(item -> delete(item.getPid()));
 
 	}
 
 	@Override
-	public void recovery(I id) {
-		getDao().recovery(id);
+	public void recovery(O id) throws IllegalArgumentException{
+		getDao().recovery(getParse().convertPidEntity(id));
 
 	}
 
 	@Override
-	public void recovery(Collection<D> models) {
+	public void recovery(Collection<D> models) throws IllegalArgumentException{
 		models.forEach(item -> recovery(item.getPid()));
 
 	}
@@ -190,34 +170,39 @@ public abstract class ABaseController<
 	public Page<D> findAllByStatusEntity(Pageable pageable, StatusEntityEnum statusEntity) {
 		Collection<E> result = getDao()
 				.findAllByStatusEntitySortByPid(statusEntity);
-		return new PageImpl<D>((List<D>) result.stream().map(e -> parseAllByStatusEntityPage(e))
+		return new PageImpl<>(result.stream().map(e -> parseAllByStatusEntityPage(e))
 				.collect(Collectors.toList()),pageable,pageable.getPageSize());
 	}
 	
-	public D parseAllByStatusEntityPage(E entity) {
+	public D parseAllByStatusEntityPage(E entity) throws IllegalArgumentException{
 		return parseUnique(entity) ;
 	}
 	
 	@Override
-	public void remove(I id) {
-		 getDao().remove(id);
+	public void remove(O id) throws IllegalArgumentException{
+		 getDao().remove(getParse().convertPidEntity(id));
 
 	}
 
 	@Override
-	public void remove(Collection<D> models) {
+	public void remove(Collection<D> models) throws IllegalArgumentException{
 		models.forEach(item -> remove(item.getPid()));
 
 	}
 	
 	@Override
-	public D patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException{
-		E entity = getDao().patch(id, patch);
+	public D patch(O id, JsonPatch patch) throws JsonPatchException, JsonProcessingException, IllegalArgumentException{
+		E entity = getDao().patch(getParse().convertPidEntity(id), patch);
 		return parsePatch(entity);
 	}
 	
-	public D parsePatch(E entity) {
+	public D parsePatch(E entity) throws IllegalArgumentException{
 		return parseUnique(entity) ;
+	}
+	
+	public List<D> parse(List<E> listE) throws IllegalArgumentException{
+		return listE.stream().map(e -> parseAllByStatusEntity(e) )
+				.collect(Collectors.toList());
 	}
 
 }

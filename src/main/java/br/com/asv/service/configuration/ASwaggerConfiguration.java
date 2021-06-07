@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 public abstract class ASwaggerConfiguration implements ISwaggerConfiguration {
 
+	@Override
 	public OpenAPI securityOpenAPI(SwaggerConfigurationData swaggerConfigurationData) {
 		return new OpenAPI()
 				.info(new Info().title(swaggerConfigurationData.getAppName())
@@ -20,10 +21,10 @@ public abstract class ASwaggerConfiguration implements ISwaggerConfiguration {
 				.components(new Components().addSecuritySchemes("bearer-jwt",
 						new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER)
 								.name(swaggerConfigurationData.getHeaderName()))
-//
 				).addSecurityItem(new SecurityRequirement().addList("bearer-jwt"));
 	}
 
+	@Override
 	public OpenAPI simpleOpenAPI(SwaggerConfigurationData swaggerConfigurationData) {
 		return new OpenAPI().info(new Info().title(swaggerConfigurationData.getAppDescription() + " application API")
 				.version(swaggerConfigurationData.getAppVersion())

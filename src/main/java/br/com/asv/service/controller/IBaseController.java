@@ -1,5 +1,6 @@
 package br.com.asv.service.controller;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,9 +16,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import br.com.asv.base.client.dto.IBaseDto;
 import br.com.asv.base.model.enums.StatusEntityEnum;
 
-
-
-public interface IBaseController<D extends IBaseDto<I>,I> {
+public interface IBaseController<D extends IBaseDto<I>,I extends Serializable> {
 
 	D findOne(I id);
 
@@ -41,5 +40,5 @@ public interface IBaseController<D extends IBaseDto<I>,I> {
 	void remove(I pid);
 	void remove(Collection<D> models);
 	
-	public D patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException ;
+	D patch(I id, JsonPatch patch) throws JsonPatchException, JsonProcessingException ;
 }

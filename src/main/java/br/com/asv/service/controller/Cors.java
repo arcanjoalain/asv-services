@@ -12,7 +12,7 @@ public class Cors {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(Boolean.TRUE);
+		config.setAllowCredentials(Boolean.FALSE);
 		config.addAllowedOrigin("*");
 		config.addAllowedHeader("*");
 		config.addExposedHeader("Authorization");

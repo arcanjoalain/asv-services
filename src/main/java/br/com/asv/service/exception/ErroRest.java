@@ -5,44 +5,16 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 @Controller
-public class ErroRest extends AError {
+@Service
+public class ErroRest implements IError {
 
-//	@Override
-//	public ResponseEntity<?> contraintViolation(ConstraintViolationException e) {
-//		Object[] s = e.getConstraintViolations().toArray();
-//		for (int i = 0; i < s.length; i++) {
-//			System.out.println("ERROR:"+ s[i].toString());
-//		}
-//		if (e.toString().contains("already exists")) {
-//			return ResponseEntity.status(500).body("already exists");
-//		} else if (e.toString().contains("duplicate")) {
-//			return ResponseEntity.status(500).body("value_duplicate");
-//		} else {
-//			e.printStackTrace();
-//			return ResponseEntity.status(500).build();
-//		}
-//	}
-//
-//	@Override
-//	public ResponseEntity<?> exception(Exception e) {
-//		ResponseEntity<?> result = null;
-//		Throwable rootException = e;
-//		while (rootException.getCause() != null) {
-//			rootException = rootException.getCause();
-//			System.out.println(rootException.getLocalizedMessage());
-//			if (rootException.getLocalizedMessage().contains("duplicate")) {
-//				result = ResponseEntity.status(500).body("value_duplicate");
-//			}
-//		}
-//
-//		if (result == null) {
-//			result = ResponseEntity.status(500).build();
-//		}
-//		return result;
-//	}
+	private static final Logger LOGGER = LogManager.getLogger(ErroRest.class);
 
 	@Override
 	public List<String> contraintViolationString(ConstraintViolationException e) {
@@ -51,13 +23,13 @@ public class ErroRest extends AError {
 		for (int i = 0; i < s.length; i++) {
 			result.add(s[i].toString());
 		}
-//		if (e.toString().contains("already exists")) {
-////			System.out.println("already exists");
-//		} else if (e.toString().contains("duplicate")) {
-////			System.out.println("value duplicate");
-//		} else {
-//			e.printStackTrace();
-//		}
+		if (e.toString().contains("already exists")) {
+			LOGGER.error("already exists");
+		} else if (e.toString().contains("duplicate")) {
+			LOGGER.error("value duplicate");
+		} else {
+			LOGGER.error(e.getMessage());
+		}
 		return result;
 	}
 
@@ -66,22 +38,18 @@ public class ErroRest extends AError {
 		Throwable rootException = e;
 		List<String> result = new LinkedList<>();
 		if (rootException.getCause() != null) {
-			rootException = e;
 			while (rootException.getCause() != null) {
-				System.out.println(rootException);
+				LOGGER.error(rootException);
 				rootException = rootException.getCause();
 				result.add(rootException.getLocalizedMessage());
-//				if (rootException.getLocalizedMessage().contains("duplicate")) {
-//				System.out.println("value_duplicate");
-//				}
+				if (rootException.getLocalizedMessage().contains("duplicate")) {
+					LOGGER.error("value_duplicate");
+				}
 			}
 		} else {
-			result.add(rootException.getMessage().toString());
+			result.add(rootException.getMessage());
 		}
 
-//		if (result == null) {
-//			result = ResponseEntity.status(500).build();
-//		}
 		return result;
 	}
 

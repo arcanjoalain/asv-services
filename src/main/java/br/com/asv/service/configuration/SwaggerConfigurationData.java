@@ -3,6 +3,11 @@ package br.com.asv.service.configuration;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author alain.vieira
+ *
+ */
 @Getter
 @Setter
 public class SwaggerConfigurationData {
