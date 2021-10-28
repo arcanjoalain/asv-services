@@ -53,13 +53,20 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
+	public ResponseEntity<IResponse> findAll(HttpServletRequest request) {
+		List<D> listResult = null;
+		listResult = getService().findAll();
+		if (listResult != null && !listResult.isEmpty()) {
+			return ResponseEntity.ok(prepareResponse(listResult));
+		} else {
+			return ResponseEntity.noContent().build();
+		}
+	}
+
+	@Override
 	public ResponseEntity<IResponse> findAll(String search, HttpServletRequest request) {
 		List<D> listResult = null;
-		if (search == null) {
-			listResult = getService().findAll();
-		} else {
-			listResult = getService().findAll(search);
-		}
+		listResult = getService().findAll(search);
 		if (listResult != null && !listResult.isEmpty()) {
 			return ResponseEntity.ok(prepareResponse(listResult));
 		} else {
@@ -84,20 +91,29 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
+	public ResponseEntity<IResponse> findAll(Pageable pageable, HttpServletRequest request) {
+		try {
+			return prepareFindAll(getService().findAll(),pageable);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
+		}
+	}
+	
+	private ResponseEntity<IResponse> prepareFindAll(List<D> listResult, Pageable pageable)throws IllegalArgumentException{
+		if (listResult != null && !listResult.isEmpty()) {
+			Page<D> result = convertToPage(listResult, pageable);
+			return ResponseEntity.ok(prepareResponse(result));
+		} else {
+			return ResponseEntity.noContent().build();
+		}
+	}
+
+	@Override
 	public ResponseEntity<IResponse> findAll(String search, Pageable pageable, HttpServletRequest request) {
 		try {
-			List<D> listResult = null;
-			if (search == null) {
-				listResult = getService().findAll();
-			} else {
-				listResult = getService().findAll(search);
-			}
-			if (listResult != null && !listResult.isEmpty()) {
-				Page<D> result = convertToPage(listResult, pageable);
-				return ResponseEntity.ok(prepareResponse(result));
-			} else {
-				return ResponseEntity.noContent().build();
-			}
+			return prepareFindAll(getService().findAll(search),pageable);
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
 		} catch (Exception e) {
@@ -254,13 +270,22 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
+	public ResponseEntity<IResponse> countAll() {
+		List<D> listResult = null;
+		listResult = getService().findAll();
+		CountResponse<Integer> response;
+		if (listResult != null) {
+			response = new CountResponse<>(listResult.size());
+		} else {
+			response = new CountResponse<>(0);
+		}
+		return ResponseEntity.ok(prepareResponse(response));
+	}
+
+	@Override
 	public ResponseEntity<IResponse> countAll(String search) {
 		List<D> listResult = null;
-		if (search == null) {
-			listResult = getService().findAll();
-		} else {
-			listResult = getService().findAll(search);
-		}
+		listResult = getService().findAll(search);
 		CountResponse<Integer> response;
 		if (listResult != null) {
 			response = new CountResponse<>(listResult.size());
@@ -299,7 +324,6 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	@Override
 	public ResponseEntity<IResponse> patchDto(I id, JsonPatch patch, HttpServletRequest req) {
 		try {
-
 			return ResponseEntity.ok(prepareResponse(getService().patch(id, patch)));
 		} catch (JsonPatchException | JsonProcessingException | IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
@@ -315,7 +339,6 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 			if (result.hasErrors()) {
 				return ResponseEntity.badRequest().body(prepareError(result));
 			}
-
 			return ResponseEntity.status(HttpStatus.CREATED).body(prepareResponse(getService().save(dto)));
 		} catch (DuplicateKeyException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -335,8 +358,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 			if (result.hasErrors()) {
 				return ResponseEntity.badRequest().body(prepareError(result));
 			}
-
-			return ResponseEntity.status(HttpStatus.CREATED).body(prepareResponse(getService().save(dto)));
+			return ResponseEntity.status(HttpStatus.CREATED).body(prepareResponse(getService().update(dto)));
 		} catch (DuplicateKeyException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		} catch (ConstraintViolationException e) {
@@ -348,5 +370,4 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 					.body(prepareError(getErroCapture().exceptionString(e)));
 		}
 	}
-
 }

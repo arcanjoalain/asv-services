@@ -9,11 +9,8 @@ import br.com.asv.service.controller.IBaseController;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class ACBaseWs<
-	C extends IBaseController<D, I>, 
-	D extends IBaseDto<I>, 
-	I extends Serializable> 
-		extends ABaseWs<D, I>{
+public abstract class ACBaseWs<C extends IBaseController<D, I>, D extends IBaseDto<I>, I extends Serializable>
+		extends ABaseWs<D, I> {
 
 	@Autowired
 	@Getter(AccessLevel.PROTECTED)

@@ -28,16 +28,16 @@ import lombok.Getter;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public abstract class ACoreWs<D,I extends Serializable> implements ICoreWs<D, I>{
+public abstract class ACoreWs<D, I extends Serializable> implements ICoreWs<D, I> {
 
 	@Getter
 	private IError erroCapture = new ErroRest();
-	
+
 	@Override
 	public Response<?, ?, String> initResponse() {
 		return new Response<>();
 	}
-	
+
 	@Override
 	public Response<D, ?, String> prepareResponse(D data) {
 		@SuppressWarnings("unchecked")
@@ -53,7 +53,7 @@ public abstract class ACoreWs<D,I extends Serializable> implements ICoreWs<D, I>
 		response.setData(data);
 		return response;
 	}
-	
+
 	@Override
 	public Response<List<D>, ?, String> prepareResponse(List<D> data) {
 		@SuppressWarnings("unchecked")
@@ -97,7 +97,7 @@ public abstract class ACoreWs<D,I extends Serializable> implements ICoreWs<D, I>
 		}
 		return response;
 	}
-	
+
 	@Override
 	public Response<IBaseDto<I>, Serializable, String> prepareError(BindingResult bindingResult) {
 		Response<IBaseDto<I>, Serializable, String> response = new Response<>();
@@ -110,16 +110,15 @@ public abstract class ACoreWs<D,I extends Serializable> implements ICoreWs<D, I>
 		}
 		return response;
 	}
-	
+
 	@Override
 	public Page<D> convertToPage(List<D> listDto, Pageable pageable) throws IllegalArgumentException {
 		int start = (int) pageable.getOffset();
-		int end =  start + pageable.getPageSize() > listDto.size() ? listDto.size()
-				: start + pageable.getPageSize();
+		int end = start + pageable.getPageSize() > listDto.size() ? listDto.size() : start + pageable.getPageSize();
 
 		return new PageImpl<>(listDto.subList(start, end), pageable, listDto.size());
 	}
-	
+
 	@Override
 	public ResponseEntity<IResponse> prepareListResult(Collection<D> listResult) {
 		try {
@@ -133,25 +132,24 @@ public abstract class ACoreWs<D,I extends Serializable> implements ICoreWs<D, I>
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(prepareError(getErroCapture().exceptionString(e)));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(prepareError(getErroCapture().exceptionString(e)));
 		}
 	}
-	
+
 	@Override
-	public ResponseEntity<IResponse> prepareListResult(IDelegateListWs<D> iDelegate ) {
-		try {
+	public ResponseEntity<IResponse> prepareListResult(IDelegateListWs<D> iDelegate) {
+//		try {
 			List<D> listResult = iDelegate.generateList();
-			if (listResult != null && !listResult.isEmpty()) {
-				return ResponseEntity.ok(prepareResponse(listResult));
-			} else {
-				return ResponseEntity.noContent().build();
-			}
-		} catch (ConstraintViolationException e) {
-			return ResponseEntity.badRequest().body(prepareError(getErroCapture().contraintViolationString(e)));
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(prepareError(getErroCapture().exceptionString(e)));
-		}
+			return prepareListResult(listResult);
+			
+//		} catch (ConstraintViolationException e) {
+//			return ResponseEntity.badRequest().body(prepareError(getErroCapture().contraintViolationString(e)));
+//		} catch (IllegalArgumentException e) {
+//			return ResponseEntity.badRequest().body(prepareError(getErroCapture().exceptionString(e)));
+//		} catch (Exception e) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//					.body(prepareError(getErroCapture().exceptionString(e)));
+//		}
 	}
 }
