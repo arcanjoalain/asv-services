@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -28,6 +27,7 @@ import br.com.asv.base.client.ws.IResponse;
 import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.base.model.exceptions.ObjectNotFoundException;
 import br.com.asv.service.controller.IBaseController;
+import jakarta.validation.ConstraintViolationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 

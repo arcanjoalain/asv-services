@@ -3,12 +3,13 @@ package br.com.asv.service.exception;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+
+import jakarta.validation.ConstraintViolationException;
 
 @Controller
 @Service

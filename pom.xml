@@ -6,16 +6,16 @@
 	<parent>
 		<groupId>br.com.asv</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.1.13</version>
+		<version>0.2.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>services</artifactId>
-	<version>0.1.70</version>
+	<version>0.2.01</version>
 	<name>asv-services</name>
 	<description>Asv Model Lib</description>
 
 	<properties>
-		<asv.base.version>0.1.27</asv.base.version>
+		<asv.base.version>0.2.01</asv.base.version>
 	</properties>
 	
 	<dependencies>
@@ -26,16 +26,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>javax.transaction-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
@@ -43,7 +33,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-data-rest</artifactId>
-			<version>1.5.12</version>
+			<version>1.6.14</version>
 		</dependency>
 
 	</dependencies>

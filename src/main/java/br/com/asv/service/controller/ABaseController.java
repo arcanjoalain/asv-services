@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -26,6 +24,7 @@ import br.com.asv.base.model.daos.IBasePatchDao;
 import br.com.asv.base.model.entities.IBaseEntity;
 import br.com.asv.base.model.enums.StatusEntityEnum;
 import br.com.asv.base.model.parse.IBaseParse;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;
 

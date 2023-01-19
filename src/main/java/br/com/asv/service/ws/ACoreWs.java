@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
@@ -24,6 +22,7 @@ import br.com.asv.service.controller.ICoreWs;
 import br.com.asv.service.controller.IDelegateListWs;
 import br.com.asv.service.exception.ErroRest;
 import br.com.asv.service.exception.IError;
+import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
 
 @Service

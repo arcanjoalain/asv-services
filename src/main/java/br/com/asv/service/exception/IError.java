@@ -2,7 +2,7 @@ package br.com.asv.service.exception;
 
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 
 public interface IError {
 	
