@@ -43,13 +43,13 @@ public interface IBaseWs<D extends IBaseDto<I>, I extends Serializable> {
 	@ApiResponse
 	@GetMapping
 	@ResponseBody
-	ResponseEntity<IResponse> findAll(HttpServletRequest request);
+	ResponseEntity<IResponse> findAll(String request);
 
 	@ApiResponse
 	@GetMapping(path = "/search")
 	@ResponseBody
 	ResponseEntity<IResponse> findAll(@RequestParam(value = "search", required = false) String search,
-			HttpServletRequest request);
+			String request);
 
 	@ApiResponse
 	@GetMapping(path = "/{id}")
@@ -60,13 +60,13 @@ public interface IBaseWs<D extends IBaseDto<I>, I extends Serializable> {
 	@ApiResponse
 	@GetMapping(path = "/page")
 	@ResponseBody
-	ResponseEntity<IResponse> findAll(Pageable pageable, HttpServletRequest request);
+	ResponseEntity<IResponse> findAll(Pageable pageable, String request);
 
 	@ApiResponse
 	@GetMapping(path = "/page/search")
 	@ResponseBody
 	ResponseEntity<IResponse> findAll(@RequestParam(value = "search", required = false) String search,
-			Pageable pageable, HttpServletRequest request);
+			Pageable pageable, String request);
 
 	@ApiResponse
 	@GetMapping(path = "/page/{status}")
@@ -117,7 +117,7 @@ public interface IBaseWs<D extends IBaseDto<I>, I extends Serializable> {
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	ResponseEntity<IResponse> save(@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto,
-			HttpServletRequest req, BindingResult result);
+			String req, BindingResult result);
 
 	@ApiResponse
 	@DeleteMapping(path = "/collection/disabled")
@@ -152,12 +152,12 @@ public interface IBaseWs<D extends IBaseDto<I>, I extends Serializable> {
 	@ApiResponses
 	@Transactional
 	ResponseEntity<IResponse> update(
-			@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto, HttpServletRequest req,
+			@Parameter(description = "dto to save.", required = true) @RequestBody @Valid D dto, String req,
 			BindingResult result);
 
 	@PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
 	@Transactional
 	ResponseEntity<IResponse> patchDto(@PathVariable("id") I id,
 			@Parameter(description = "dto to save.", required = true) @RequestBody JsonPatch patchDto,
-			HttpServletRequest req);
+			String req);
 }

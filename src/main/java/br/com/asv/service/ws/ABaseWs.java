@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -53,7 +52,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> findAll(HttpServletRequest request) {
+	public ResponseEntity<IResponse> findAll(@RequestBody String request) {
 		List<D> listResult = null;
 		listResult = getService().findAll();
 		if (listResult != null && !listResult.isEmpty()) {
@@ -64,7 +63,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> findAll(String search, HttpServletRequest request) {
+	public ResponseEntity<IResponse> findAll(String search, @RequestBody String request) {
 		List<D> listResult = null;
 		listResult = getService().findAll(search);
 		if (listResult != null && !listResult.isEmpty()) {
@@ -91,7 +90,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> findAll(Pageable pageable, HttpServletRequest request) {
+	public ResponseEntity<IResponse> findAll(Pageable pageable, @RequestBody String request) {
 		try {
 			return prepareFindAll(getService().findAll(),pageable);
 		} catch (IllegalArgumentException e) {
@@ -111,7 +110,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> findAll(String search, Pageable pageable, HttpServletRequest request) {
+	public ResponseEntity<IResponse> findAll(String search, Pageable pageable, @RequestBody String request) {
 		try {
 			return prepareFindAll(getService().findAll(search),pageable);
 		} catch (IllegalArgumentException e) {
@@ -322,7 +321,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> patchDto(I id, JsonPatch patch, HttpServletRequest req) {
+	public ResponseEntity<IResponse> patchDto(I id, JsonPatch patch, @RequestBody String req) {
 		try {
 			return ResponseEntity.ok(prepareResponse(getService().patch(id, patch)));
 		} catch (JsonPatchException | JsonProcessingException | IllegalArgumentException e) {
@@ -334,7 +333,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> save(D dto, HttpServletRequest req, BindingResult result) {
+	public ResponseEntity<IResponse> save(D dto, @RequestBody String req, BindingResult result) {
 		try {
 			if (result.hasErrors()) {
 				return ResponseEntity.badRequest().body(prepareError(result));
@@ -353,7 +352,7 @@ public abstract class ABaseWs<D extends IBaseDto<I>, I extends Serializable> ext
 	}
 
 	@Override
-	public ResponseEntity<IResponse> update(D dto, HttpServletRequest req, BindingResult result) {
+	public ResponseEntity<IResponse> update(D dto, @RequestBody String req, BindingResult result) {
 		try {
 			if (result.hasErrors()) {
 				return ResponseEntity.badRequest().body(prepareError(result));
